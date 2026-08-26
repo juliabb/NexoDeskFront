@@ -5,7 +5,7 @@ import { useAuth } from '../auth/AuthContext'
 import { api, downloadAuthenticated } from '../services/api'
 
 type Person = { id: string; nomeCompleto: string }
-type TicketDetails = { id: string; protocolo: string; titulo: string; descricao: string; prioridade: string; status: string; categoria: { id: number; nome: string }; solicitante: Person; setorSolicitante: { id: number; nome: string }; setorResponsavel: { id: number; nome: string }; responsavel?: Person; criadoEm: string; atualizadoEm?: string; resolvidoEm?: string; fechadoEm?: string }
+type TicketDetails = { id: string; protocolo: string; titulo: string; descricao: string; prioridade: string; status: string; categoria: { id: number; nome: string }; solicitante: Person; setorSolicitante: { id: number; nome: string }; setorResponsavel: { id: number; nome: string }; responsavel?: Person; criadoEm: string; prazoResolucaoEm: string; atualizadoEm?: string; resolvidoEm?: string; fechadoEm?: string }
 type Comment = { id: string; autor: Person; conteudo: string; interno: boolean; criadoEm: string }
 type HistoryItem = { id: string; acao: string; statusAnterior?: string; statusNovo?: string; realizadoPor: Person; observacao?: string; criadoEm: string }
 type HistoryResponse = { historico: HistoryItem[] }
@@ -99,10 +99,20 @@ export function TicketDetailsPage() {
         {error && <div className="form-error">{error}</div>}
       </section>
       <aside className="details-aside">
-        <article className="content-card info-card"><h2>Informações</h2><dl><div><dt>Status</dt><dd>{statusLabels[ticket.status] ?? ticket.status}</dd></div><div><dt>Prioridade</dt><dd>{ticket.prioridade}</dd></div><div><dt>Categoria</dt><dd>{ticket.categoria.nome}</dd></div><div><dt>Setor responsável</dt><dd>{ticket.setorResponsavel.nome}</dd></div><div><dt><UserRound /> Responsável</dt><dd>{ticket.responsavel?.nomeCompleto ?? 'Não atribuído'}</dd></div></dl></article>
+        <article className="content-card info-card"><h2>Informações</h2><dl><div><dt>Status</dt><dd>{statusLabels[ticket.status] ?? ticket.status}</dd></div><div><dt>Prioridade</dt><dd>{ticket.prioridade}</dd></div><div><dt>Categoria</dt><dd>{ticket.categoria.nome}</dd></div><div><dt>Setor responsável</dt><dd>{ticket.setorResponsavel.nome}</dd></div><div><dt>Prazo de resolução</dt><dd>{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(ticket.prazoResolucaoEm))}</dd></div><div><dt>SLA</dt><dd><SlaBadge deadline={ticket.prazoResolucaoEm} resolved={ticket.resolvidoEm} /></dd></div><div><dt><UserRound /> Responsável</dt><dd>{ticket.responsavel?.nomeCompleto ?? 'Não atribuído'}</dd></div></dl></article>
         <article className="content-card"><div className="section-heading"><div><Paperclip /><h2>Anexos</h2></div><span>{attachments.length}</span></div>{attachments.length === 0 ? <p className="muted-empty">Nenhum arquivo anexado.</p> : <div className="attachment-list">{attachments.map((item) => <button type="button" key={item.id} onClick={() => void downloadAttachment(item)} disabled={downloadingId === item.id}><FileText /><span><strong>{item.nomeOriginal}</strong><small>{fileSize(item.tamanhoBytes)} · {downloadingId === item.id ? 'Baixando...' : 'Baixar'}</small></span>{downloadingId === item.id ? <LoaderCircle className="spin" /> : <Download />}</button>)}</div>}{!['Fechado', 'Cancelado'].includes(ticket.status) && <label className={`upload-button ${uploading ? 'disabled' : ''}`}><Upload /> {uploading ? 'Enviando...' : 'Adicionar arquivo'}<input type="file" accept=".pdf,.png,.jpg,.jpeg,.txt,.docx,.xlsx" onChange={(event) => void uploadAttachment(event)} disabled={uploading} /></label>}<small className="upload-hint">PDF, imagens, TXT, DOCX ou XLSX · até 10 MB</small></article>
         <article className="content-card"><div className="section-heading"><div><Clock3 /><h2>Histórico</h2></div></div><div className="timeline">{history.map((item) => <div key={item.id}><i /><span><strong>{item.acao}</strong><small>{item.realizadoPor.nomeCompleto} · {dateTime(item.criadoEm)}</small>{item.observacao && <p>{item.observacao}</p>}</span></div>)}</div></article>
       </aside>
     </div>}
   </main>
+}
+
+function SlaBadge({ deadline, resolved }: { deadline: string; resolved?: string }) {
+  const [renderedAt] = useState(() => Date.now())
+  const deadlineAt = new Date(deadline).getTime()
+  const reference = resolved ? new Date(resolved).getTime() : renderedAt
+  const late = reference > deadlineAt
+  const warning = !resolved && !late && deadlineAt - reference <= 4 * 60 * 60 * 1000
+  const label = late ? (resolved ? 'Resolvido fora do SLA' : 'SLA atrasado') : resolved ? 'SLA cumprido' : warning ? 'Vence em breve' : 'Dentro do SLA'
+  return <span className={`sla-badge sla-${late ? 'late' : warning ? 'warning' : 'ok'}`}>{label}</span>
 }
