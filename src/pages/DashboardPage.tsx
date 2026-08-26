@@ -4,9 +4,9 @@ import { useAuth } from '../auth/AuthContext'
 import { api } from '../services/api'
 import { useNavigate } from 'react-router-dom'
 
-type Chamado = { id: string; protocolo: string; titulo: string; prioridade: string; status: string; categoria: string; areaResponsavel: string; criadoEm: string; atualizadoEm?: string }
+type Chamado = { id: string; protocolo: string; titulo: string; prioridade: string; status: string; categoria: string; setorResponsavel: string; criadoEm: string; atualizadoEm?: string }
 type ChamadosResponse = { pagina: number; tamanhoPagina: number; totalRegistros: number; chamados: Chamado[] }
-type Categoria = { id: number; nome: string; descricao?: string; areaResponsavel: { id: number; nome: string } }
+type Categoria = { id: number; nome: string; descricao?: string; setorResponsavel: { id: number; nome: string } }
 type NovoChamado = { id: string; protocolo: string }
 
 const statusLabels: Record<string, string> = { Aberto: 'Aberto', EmTriagem: 'Em triagem', EmAtendimento: 'Em atendimento', AguardandoSolicitante: 'Aguardando você', Resolvido: 'Resolvido', Fechado: 'Fechado', Cancelado: 'Cancelado' }
@@ -67,7 +67,7 @@ export function DashboardPage() {
             {loading && <div className="panel-state"><LoaderCircle className="spin" /><p>Carregando chamados...</p></div>}
             {!loading && error && <div className="panel-state error-state"><AlertCircle /><p>{error}</p><button onClick={() => void loadTickets()}>Tentar novamente</button></div>}
             {!loading && !error && filtered.length === 0 && <div className="panel-state"><div className="empty-icon"><Ticket /></div><h3>{search ? 'Nenhum chamado encontrado' : 'Nenhum chamado aberto ainda'}</h3><p>{search ? 'Tente pesquisar por outro termo.' : 'Quando precisar de ajuda, abra sua primeira solicitação.'}</p>{!search && <button className="primary-button" onClick={() => setModalOpen(true)}><Plus /> Abrir chamado</button>}</div>}
-            {!loading && !error && filtered.length > 0 && <div className="ticket-list">{filtered.slice(0, 8).map((item) => <article className="ticket-row" key={item.id} onClick={() => navigate(`/chamados/${item.id}`)}><div className={`priority-dot priority-${item.prioridade.toLowerCase()}`} title={`Prioridade ${prioridadeLabels[item.prioridade]}`} /><div className="ticket-main"><div><span className="protocol">{item.protocolo}</span><span className={`status status-${item.status.toLowerCase()}`}>{statusLabels[item.status] ?? item.status}</span></div><h3>{item.titulo}</h3><p>{item.categoria} · {item.areaResponsavel}</p></div><time>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.criadoEm))}</time><button className="row-action" aria-label={`Abrir chamado ${item.protocolo}`}><ChevronRight /></button></article>)}</div>}
+            {!loading && !error && filtered.length > 0 && <div className="ticket-list">{filtered.slice(0, 8).map((item) => <article className="ticket-row" key={item.id} onClick={() => navigate(`/chamados/${item.id}`)}><div className={`priority-dot priority-${item.prioridade.toLowerCase()}`} title={`Prioridade ${prioridadeLabels[item.prioridade]}`} /><div className="ticket-main"><div><span className="protocol">{item.protocolo}</span><span className={`status status-${item.status.toLowerCase()}`}>{statusLabels[item.status] ?? item.status}</span></div><h3>{item.titulo}</h3><p>{item.categoria} · {item.setorResponsavel}</p></div><time>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.criadoEm))}</time><button className="row-action" aria-label={`Abrir chamado ${item.protocolo}`}><ChevronRight /></button></article>)}</div>}
           </section>
         </div>
       </section>

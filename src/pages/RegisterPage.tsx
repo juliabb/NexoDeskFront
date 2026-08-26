@@ -3,11 +3,11 @@ import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Headphones } from 'lucide-re
 import { Link } from 'react-router-dom'
 import { api } from '../services/api'
 
-type Coordenadoria = { id: number; nome: string; sigla: string }
-type Area = { id: number; nome: string }
+type Departamento = { id: number; nome: string; sigla: string }
+type Setor = { id: number; nome: string }
 type CadastroResponse = { mensagem: string; status: string }
 
-const initialForm = { nomeCompleto: '', emailCorporativo: '', cpf: '', ramal: '', coordenadoriaId: '', areaId: '', senha: '', confirmarSenha: '' }
+const initialForm = { nomeCompleto: '', emailCorporativo: '', cpf: '', ramal: '', departamentoId: '', setorId: '', senha: '', confirmarSenha: '' }
 
 function formatCpf(value: string) {
   return value.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2')
@@ -15,31 +15,31 @@ function formatCpf(value: string) {
 
 export function RegisterPage() {
   const [form, setForm] = useState(initialForm)
-  const [coordenadorias, setCoordenadorias] = useState<Coordenadoria[]>([])
-  const [areas, setAreas] = useState<Area[]>([])
+  const [departamentos, setDepartamentos] = useState<Departamento[]>([])
+  const [setores, setSetores] = useState<Setor[]>([])
   const [loadingOptions, setLoadingOptions] = useState(true)
-  const [loadingAreas, setLoadingAreas] = useState(false)
+  const [loadingSetores, setLoadingSetores] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    api<Coordenadoria[]>('/api/coordenadorias')
-      .then(setCoordenadorias)
-      .catch((requestError: unknown) => setError(requestError instanceof Error ? requestError.message : 'Não foi possível carregar as coordenadorias.'))
+    api<Departamento[]>('/api/departamentos')
+      .then(setDepartamentos)
+      .catch((requestError: unknown) => setError(requestError instanceof Error ? requestError.message : 'Não foi possível carregar os departamentos.'))
       .finally(() => setLoadingOptions(false))
   }, [])
 
-  function handleCoordenadoriaChange(coordenadoriaId: string) {
-    setForm((current) => ({ ...current, coordenadoriaId, areaId: '' }))
-    setAreas([])
-    if (!coordenadoriaId) return
-    setLoadingAreas(true)
-    api<Area[]>(`/api/coordenadorias/${coordenadoriaId}/areas`)
-      .then(setAreas)
-      .catch((requestError: unknown) => setError(requestError instanceof Error ? requestError.message : 'Não foi possível carregar as áreas.'))
-      .finally(() => setLoadingAreas(false))
+  function handleDepartamentoChange(departamentoId: string) {
+    setForm((current) => ({ ...current, departamentoId, setorId: '' }))
+    setSetores([])
+    if (!departamentoId) return
+    setLoadingSetores(true)
+    api<Setor[]>(`/api/departamentos/${departamentoId}/setores`)
+      .then(setSetores)
+      .catch((requestError: unknown) => setError(requestError instanceof Error ? requestError.message : 'Não foi possível carregar os setores.'))
+      .finally(() => setLoadingSetores(false))
   }
 
   const passwordChecks = useMemo(() => [
@@ -63,7 +63,7 @@ export function RegisterPage() {
     try {
       const response = await api<CadastroResponse>('/api/auth/cadastro', {
         method: 'POST',
-        body: JSON.stringify({ ...form, cpf: form.cpf.replace(/\D/g, ''), coordenadoriaId: Number(form.coordenadoriaId), areaId: Number(form.areaId), confirmarSenha: undefined }),
+        body: JSON.stringify({ ...form, cpf: form.cpf.replace(/\D/g, ''), departamentoId: Number(form.departamentoId), setorId: Number(form.setorId), confirmarSenha: undefined }),
       })
       setSuccess(response.mensagem)
       setForm(initialForm)
@@ -83,8 +83,8 @@ export function RegisterPage() {
             <div className="field full"><label htmlFor="emailCadastro">E-mail</label><input id="emailCadastro" type="email" placeholder="voce@empresa.com" value={form.emailCorporativo} onChange={(e) => update('emailCorporativo', e.target.value)} required /></div>
             <div className="field"><label htmlFor="cpf">CPF</label><input id="cpf" inputMode="numeric" placeholder="000.000.000-00" value={form.cpf} onChange={(e) => update('cpf', formatCpf(e.target.value))} required /></div>
             <div className="field"><label htmlFor="ramal">Ramal</label><input id="ramal" placeholder="Ex.: 1234" value={form.ramal} onChange={(e) => update('ramal', e.target.value)} required /></div>
-            <div className="field"><label htmlFor="coordenadoria">Coordenadoria</label><select id="coordenadoria" value={form.coordenadoriaId} onChange={(e) => handleCoordenadoriaChange(e.target.value)} disabled={loadingOptions} required><option value="">{loadingOptions ? 'Carregando...' : 'Selecione'}</option>{coordenadorias.map((item) => <option key={item.id} value={item.id}>{item.sigla} — {item.nome}</option>)}</select></div>
-            <div className="field"><label htmlFor="area">Área</label><select id="area" value={form.areaId} onChange={(e) => update('areaId', e.target.value)} disabled={!form.coordenadoriaId || loadingAreas} required><option value="">{loadingAreas ? 'Carregando...' : 'Selecione'}</option>{areas.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></div>
+            <div className="field"><label htmlFor="departamento">Departamento</label><select id="departamento" value={form.departamentoId} onChange={(e) => handleDepartamentoChange(e.target.value)} disabled={loadingOptions} required><option value="">{loadingOptions ? 'Carregando...' : 'Selecione'}</option>{departamentos.map((item) => <option key={item.id} value={item.id}>{item.sigla} — {item.nome}</option>)}</select></div>
+            <div className="field"><label htmlFor="setor">Setor</label><select id="setor" value={form.setorId} onChange={(e) => update('setorId', e.target.value)} disabled={!form.departamentoId || loadingSetores} required><option value="">{loadingSetores ? 'Carregando...' : 'Selecione'}</option>{setores.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select></div>
             <div className="field"><label htmlFor="novaSenha">Senha</label><div className="plain-password"><input id="novaSenha" type={showPassword ? 'text' : 'password'} value={form.senha} onChange={(e) => update('senha', e.target.value)} minLength={8} maxLength={128} required /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label="Mostrar ou ocultar senha">{showPassword ? <EyeOff /> : <Eye />}</button></div></div>
             <div className="field"><label htmlFor="confirmarSenha">Confirmar senha</label><input id="confirmarSenha" type={showPassword ? 'text' : 'password'} value={form.confirmarSenha} onChange={(e) => update('confirmarSenha', e.target.value)} required /></div>
             <div className="password-rules full">{passwordChecks.map(([label, valid]) => <span className={valid ? 'valid' : ''} key={label}><Check /> {label}</span>)}</div>
