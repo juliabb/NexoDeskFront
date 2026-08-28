@@ -6,6 +6,10 @@ import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { TicketDetailsPage } from './pages/TicketDetailsPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { ServiceQueuePage } from './pages/ServiceQueuePage'
+import { UsersPage } from './pages/UsersPage'
+import { MyTicketsPage } from './pages/MyTicketsPage'
+import { NotificationsPage } from './pages/NotificationsPage'
 import './App.css'
 
 function ProtectedRoute() {
@@ -22,6 +26,10 @@ function App() {
         <Route path="/" element={<ProtectedRoute />} />
         <Route path="/chamados/:id" element={sessionRoute(<TicketDetailsPage />)} />
         <Route path="/configuracoes" element={adminRoute(<SettingsPage />)} />
+        <Route path="/fila" element={teamRoute(<ServiceQueuePage />)} />
+        <Route path="/usuarios" element={adminRoute(<UsersPage />)} />
+        <Route path="/meus-chamados" element={sessionRoute(<MyTicketsPage />)} />
+        <Route path="/notificacoes" element={sessionRoute(<NotificationsPage />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
@@ -36,6 +44,10 @@ function adminRoute(element: ReactNode) {
   return <AdminGate>{element}</AdminGate>
 }
 
+function teamRoute(element: ReactNode) {
+  return <TeamGate>{element}</TeamGate>
+}
+
 function SessionGate({ children }: { children: ReactNode }) {
   const { session } = useAuth()
   return session ? children : <Navigate to="/login" replace />
@@ -45,6 +57,12 @@ function AdminGate({ children }: { children: ReactNode }) {
   const { session } = useAuth()
   if (!session) return <Navigate to="/login" replace />
   return session.perfil === 'Administrador' ? children : <Navigate to="/" replace />
+}
+
+function TeamGate({ children }: { children: ReactNode }) {
+  const { session } = useAuth()
+  if (!session) return <Navigate to="/login" replace />
+  return session.perfil !== 'Padrao' ? children : <Navigate to="/" replace />
 }
 
 export default App
