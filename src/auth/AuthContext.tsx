@@ -15,6 +15,7 @@ type AuthContextValue = {
   isDemo: boolean
   login: (emailCorporativo: string, senha: string) => Promise<Session>
   logout: () => Promise<void>
+  endSession: (notice?: string) => void
   clearAuthNotice: () => void
 }
 
@@ -52,6 +53,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authNotice,
     isDemo: session?.email.toLowerCase() === DEMO_EMAIL,
     clearAuthNotice() { setAuthNotice('') },
+    endSession(notice = '') {
+      localStorage.removeItem(STORAGE_KEY)
+      setSession(null)
+      setAuthNotice(notice)
+    },
     async login(emailCorporativo, senha) {
       const nextSession = await api<Session>('/api/auth/login', {
         method: 'POST', body: JSON.stringify({ emailCorporativo, senha }),

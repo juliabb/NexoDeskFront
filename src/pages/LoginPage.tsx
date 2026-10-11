@@ -11,7 +11,7 @@ export function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (session) return <Navigate to="/" replace />
+  if (session) return <Navigate to={session.deveAlterarSenha ? '/alterar-senha' : '/'} replace />
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

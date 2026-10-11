@@ -13,6 +13,7 @@ Acesse a versão publicada do NexoDesk:
 ## Funcionalidades
 
 - Autenticação e persistência da sessão do usuário;
+- Troca obrigatória de senha temporária no primeiro acesso;
 - Solicitação de cadastro com aprovação administrativa;
 - Painel com resumo e chamados recentes;
 - Abertura de chamados por categoria, com prioridade e anexo;

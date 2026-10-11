@@ -11,11 +11,13 @@ import { ServiceQueuePage } from './pages/ServiceQueuePage'
 import { UsersPage } from './pages/UsersPage'
 import { MyTicketsPage } from './pages/MyTicketsPage'
 import { NotificationsPage } from './pages/NotificationsPage'
+import { ChangePasswordPage } from './pages/ChangePasswordPage'
 import './App.css'
 
 function ProtectedRoute() {
   const { session } = useAuth()
-  return session ? <DashboardPage /> : <Navigate to="/login" replace />
+  if (!session) return <Navigate to="/login" replace />
+  return session.deveAlterarSenha ? <Navigate to="/alterar-senha" replace /> : <DashboardPage />
 }
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/cadastro" element={<RegisterPage />} />
+        <Route path="/alterar-senha" element={<PasswordChangeGate />} />
         <Route path="/" element={<ProtectedRoute />} />
         <Route path="/chamados/:id" element={sessionRoute(<TicketDetailsPage />)} />
         <Route path="/configuracoes" element={adminRoute(<SettingsPage />)} />
@@ -59,18 +62,27 @@ function teamRoute(element: ReactNode) {
 
 function SessionGate({ children }: { children: ReactNode }) {
   const { session } = useAuth()
-  return session ? children : <Navigate to="/login" replace />
+  if (!session) return <Navigate to="/login" replace />
+  return session.deveAlterarSenha ? <Navigate to="/alterar-senha" replace /> : children
+}
+
+function PasswordChangeGate() {
+  const { session } = useAuth()
+  if (!session) return <Navigate to="/login" replace />
+  return session.deveAlterarSenha ? <ChangePasswordPage /> : <Navigate to="/" replace />
 }
 
 function AdminGate({ children }: { children: ReactNode }) {
   const { session } = useAuth()
   if (!session) return <Navigate to="/login" replace />
+  if (session.deveAlterarSenha) return <Navigate to="/alterar-senha" replace />
   return session.perfil === 'Administrador' ? children : <Navigate to="/" replace />
 }
 
 function TeamGate({ children }: { children: ReactNode }) {
   const { session } = useAuth()
   if (!session) return <Navigate to="/login" replace />
+  if (session.deveAlterarSenha) return <Navigate to="/alterar-senha" replace />
   return session.perfil !== 'Padrao' ? children : <Navigate to="/" replace />
 }
 
