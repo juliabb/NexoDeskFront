@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api } from '../services/api'
 
 export type Session = {
@@ -11,11 +11,15 @@ export type Session = {
 
 type AuthContextValue = {
   session: Session | null
+  authNotice: string
+  isDemo: boolean
   login: (emailCorporativo: string, senha: string) => Promise<Session>
   logout: () => Promise<void>
+  clearAuthNotice: () => void
 }
 
 const STORAGE_KEY = 'nexodesk:session'
+const DEMO_EMAIL = 'teste@teste.com'
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 function readSession(): Session | null {
@@ -30,13 +34,30 @@ function readSession(): Session | null {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(readSession)
+  const [authNotice, setAuthNotice] = useState('')
+
+  useEffect(() => {
+    function handleUnauthorized() {
+      localStorage.removeItem(STORAGE_KEY)
+      setSession(null)
+      setAuthNotice('Sua sessão expirou. Entre novamente para continuar.')
+    }
+
+    window.addEventListener('nexodesk:unauthorized', handleUnauthorized)
+    return () => window.removeEventListener('nexodesk:unauthorized', handleUnauthorized)
+  }, [])
+
   const value = useMemo<AuthContextValue>(() => ({
     session,
+    authNotice,
+    isDemo: session?.email.toLowerCase() === DEMO_EMAIL,
+    clearAuthNotice() { setAuthNotice('') },
     async login(emailCorporativo, senha) {
       const nextSession = await api<Session>('/api/auth/login', {
         method: 'POST', body: JSON.stringify({ emailCorporativo, senha }),
       })
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession))
+      setAuthNotice('')
       setSession(nextSession)
       return nextSession
     },
@@ -45,10 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session) await api('/api/auth/logout', { method: 'POST' }, session.token)
       } finally {
         localStorage.removeItem(STORAGE_KEY)
+        setAuthNotice('')
         setSession(null)
       }
     },
-  }), [session])
+  }), [authNotice, session])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

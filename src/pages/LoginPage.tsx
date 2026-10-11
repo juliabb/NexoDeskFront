@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
 export function LoginPage() {
-  const { login, session } = useAuth()
+  const { login, session, authNotice, clearAuthNotice } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -15,6 +15,7 @@ export function LoginPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    clearAuthNotice()
     setError('')
     setLoading(true)
     try {
@@ -57,6 +58,7 @@ export function LoginPage() {
             <input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" placeholder="Digite sua senha" value={password} onChange={(event) => setPassword(event.target.value)} required />
             <button className="password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}>{showPassword ? <EyeOff /> : <Eye />}</button>
           </div>
+          {authNotice && <div className="form-notice" role="status">{authNotice}</div>}
           {error && <div className="form-error" role="alert">{error}</div>}
           <button className="primary-button login-button" type="submit" disabled={loading}>{loading ? 'Entrando...' : 'Entrar'} {!loading && <ArrowRight />}</button>
           <p className="signup-link">Ainda não tem acesso? <Link to="/cadastro">Solicite seu cadastro</Link></p>

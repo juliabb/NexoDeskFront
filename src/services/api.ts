@@ -24,6 +24,9 @@ export async function api<T = void>(path: string, init: RequestInit = {}, token?
   })
 
   if (!response.ok) {
+    if (response.status === 401 && token) {
+      window.dispatchEvent(new CustomEvent('nexodesk:unauthorized'))
+    }
     const body = await response.json().catch(() => ({})) as ApiErrorBody
     const validationMessage = body.errors ? Object.values(body.errors).flat()[0] : undefined
     throw new ApiError(body.mensagem ?? validationMessage ?? body.detail ?? body.title ?? 'Não foi possível concluir a solicitação.', response.status)

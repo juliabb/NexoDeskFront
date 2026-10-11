@@ -28,6 +28,7 @@ export function TicketDetailsPage() {
   const [attachments, setAttachments] = useState<Attachment[]>([])
   const [attendants, setAttendants] = useState<Attendant[]>([])
   const [comment, setComment] = useState('')
+  const [internalComment, setInternalComment] = useState(false)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -67,10 +68,11 @@ export function TicketDetailsPage() {
   async function submitComment(event: FormEvent) {
     event.preventDefault()
     if (!id || !session || !comment.trim()) return
+    const isInternal = session.perfil !== 'Padrao' && internalComment
     setSending(true); setError('')
     try {
-      await api(`/api/chamados/${id}/comentarios`, { method: 'POST', body: JSON.stringify({ conteudo: comment, interno: false }) }, session.token)
-      setComment(''); await load()
+      await api(`/api/chamados/${id}/comentarios`, { method: 'POST', body: JSON.stringify({ conteudo: comment, interno: isInternal }) }, session.token)
+      setComment(''); setInternalComment(false); await load()
     } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Não foi possível enviar o comentário.') }
     finally { setSending(false) }
   }
@@ -138,7 +140,11 @@ export function TicketDetailsPage() {
         <article className="content-card"><h2>Descrição</h2><p className="ticket-description">{ticket.descricao}</p></article>
         <article className="content-card"><div className="section-heading"><div><MessageSquare /><h2>Conversas</h2></div><span>{comments.length}</span></div>
           <div className="comments-list">{comments.length === 0 ? <p className="muted-empty">Ainda não existem comentários.</p> : comments.map((item) => <div className="comment" key={item.id}><div className="comment-avatar">{item.autor.nomeCompleto.charAt(0)}</div><div><header><strong>{item.autor.nomeCompleto}</strong><time>{dateTime(item.criadoEm)}</time>{item.interno && <span>Interno</span>}</header><p>{item.conteudo}</p></div></div>)}</div>
-          {!['Fechado', 'Cancelado'].includes(ticket.status) && <form className="comment-form" onSubmit={submitComment}><textarea aria-label="Novo comentário" placeholder="Escreva uma mensagem para a equipe..." maxLength={2000} value={comment} onChange={(event) => setComment(event.target.value)} required /><div><small>{comment.length}/2000</small><button className="primary-button" disabled={sending}>{sending ? 'Enviando...' : 'Enviar'} {!sending && <Send />}</button></div></form>}
+          {!['Fechado', 'Cancelado'].includes(ticket.status) && <form className={`comment-form ${internalComment ? 'internal' : ''}`} onSubmit={submitComment}>
+            {session?.perfil !== 'Padrao' && <div className="comment-visibility" role="group" aria-label="Visibilidade do comentário"><button type="button" className={!internalComment ? 'active' : ''} aria-pressed={!internalComment} onClick={() => setInternalComment(false)}>Resposta pública</button><button type="button" className={internalComment ? 'active internal' : ''} aria-pressed={internalComment} onClick={() => setInternalComment(true)}>Nota interna</button></div>}
+            <textarea aria-label={internalComment ? 'Nova nota interna' : 'Novo comentário'} placeholder={internalComment ? 'Adicione uma observação visível apenas para a equipe...' : 'Escreva uma mensagem para o solicitante...'} maxLength={2000} value={comment} onChange={(event) => setComment(event.target.value)} required />
+            <div><small>{internalComment ? 'Somente a equipe verá esta nota' : `${comment.length}/2000`}</small><button className="primary-button" disabled={sending}>{sending ? 'Enviando...' : internalComment ? 'Adicionar nota' : 'Enviar resposta'} {!sending && <Send />}</button></div>
+          </form>}
         </article>
         {error && <div className="form-error">{error}</div>}
         {success && <div className="form-success">{success}</div>}

@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import type { ReactNode } from 'react'
+import { ShieldCheck } from 'lucide-react'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import { DashboardPage } from './pages/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
@@ -20,6 +21,7 @@ function ProtectedRoute() {
 function App() {
   return (
     <AuthProvider>
+      <DemoEnvironmentBanner />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/cadastro" element={<RegisterPage />} />
@@ -34,6 +36,13 @@ function App() {
       </Routes>
     </AuthProvider>
   )
+}
+
+function DemoEnvironmentBanner() {
+  const { isDemo } = useAuth()
+  if (!isDemo) return null
+
+  return <div className="demo-environment-banner" role="status"><ShieldCheck /><span><strong>Ambiente de demonstração</strong> Você está usando uma conta administradora criada para testar os recursos do NexoDesk.</span></div>
 }
 
 function sessionRoute(element: ReactNode) {
