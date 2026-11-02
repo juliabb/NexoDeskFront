@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { ArrowLeft, Check, Headphones, LoaderCircle, LockKeyhole, LogOut, Pencil, Search, UserCheck, UserRoundCog, UserX, X } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { api } from '../services/api'
 
@@ -19,7 +19,8 @@ export function UsersPage() {
   const token = session!.token
   const [data, setData] = useState<UsersResponse | null>(null)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [searchParams] = useSearchParams()
+  const [statusFilter, setStatusFilter] = useState(() => searchParams.get('status') === 'AguardandoAprovacao' ? 'AguardandoAprovacao' : '')
   const [profileFilter, setProfileFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState('')

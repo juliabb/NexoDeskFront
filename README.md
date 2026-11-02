@@ -24,7 +24,7 @@ Acesse a versão publicada do NexoDesk:
 - Abertura de chamados por categoria, com prioridade e anexo;
 - Consulta, pesquisa e filtros dos próprios chamados;
 - Histórico de interações e detalhes de cada solicitação;
-- Notificações de atualizações nos chamados, com sincronização automática;
+- Notificações de atualizações nos chamados e de cadastros pendentes para administradores, com sincronização automática;
 - Fila de atendimento para a equipe de suporte;
 - Acompanhamento visual dos prazos de SLA;
 - Gestão de usuários, perfis e status de acesso;
