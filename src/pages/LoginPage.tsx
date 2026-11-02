@@ -50,6 +50,20 @@ export function LoginPage() {
           <span className="eyebrow">Bem-vindo de volta</span>
           <h2>Acesse sua conta</h2>
           <p className="form-intro">Entre com seu e-mail e senha para acessar o portal.</p>
+          <section className="demo-access" aria-labelledby="demo-access-title">
+            <h3 id="demo-access-title">Conheça o NexoDesk</h3>
+            <p>Use a conta compartilhada de administrador para testar o sistema.</p>
+            <dl>
+              <div><dt>E-mail</dt><dd><code>teste@teste.com</code></dd></div>
+              <div><dt>Senha</dt><dd><code>@Password123</code></dd></div>
+            </dl>
+            <button className="demo-fill-button" type="button" disabled={loading} onClick={() => {
+              setEmail('teste@teste.com')
+              setPassword('@Password123')
+              setError('')
+            }}>Preencher conta de teste</button>
+            <small>Você pode explorar as áreas e operar chamados. Alterações em usuários, senhas e configurações ficam bloqueadas para preservar o ambiente.</small>
+          </section>
           <label htmlFor="email">E-mail</label>
           <div className="input-wrap"><Mail aria-hidden="true" /><input id="email" type="email" autoComplete="email" placeholder="voce@empresa.com" value={email} onChange={(event) => setEmail(event.target.value)} required /></div>
           <label htmlFor="password">Senha</label>
@@ -62,6 +76,10 @@ export function LoginPage() {
           {error && <div className="form-error" role="alert">{error}</div>}
           <button className="primary-button login-button" type="submit" disabled={loading}>{loading ? 'Entrando...' : 'Entrar'} {!loading && <ArrowRight />}</button>
           <p className="signup-link">Ainda não tem acesso? <Link to="/cadastro">Solicite seu cadastro</Link></p>
+          <nav className="project-links" aria-label="Repositórios do projeto">
+            <a href="https://github.com/juliabb/NexoDeskFront" target="_blank" rel="noopener noreferrer">Frontend no GitHub ↗</a>
+            <a href="https://github.com/juliabb/NexoDesk.API" target="_blank" rel="noopener noreferrer">Backend no GitHub ↗</a>
+          </nav>
         </form>
       </section>
     </main>

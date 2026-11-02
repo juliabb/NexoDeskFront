@@ -10,6 +10,11 @@ Acesse a versão publicada do NexoDesk:
 
 **[Abrir o NexoDesk](https://nexodeskfront.onrender.com/login)**
 
+## Repositórios
+
+- [Frontend — React e TypeScript](https://github.com/juliabb/NexoDeskFront)
+- [Backend — ASP.NET Core Web API](https://github.com/juliabb/NexoDesk.API)
+
 ## Funcionalidades
 
 - Autenticação e persistência da sessão do usuário;
@@ -28,6 +33,8 @@ Acesse a versão publicada do NexoDesk:
 ## Acesso para demonstração
 
 Use as credenciais abaixo para conhecer e testar as funcionalidades do sistema:
+
+Na tela de login, clique em **Preencher conta de teste** e depois em **Entrar**.
 
 | Campo | Credencial |
 | --- | --- |

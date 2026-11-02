@@ -122,3 +122,15 @@
 .comment-form.internal textarea { border-color: #e3cf99; background: #fffdf7; }
 .comment-form.internal textarea:focus { border-color: #b98b24; box-shadow: 0 0 0 3px rgba(185,139,36,.1); }
 .comment-form.internal .primary-button { background: #8a681c; }
+
+.demo-access{margin:0 0 24px;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--green-100)}
+.demo-access h3{margin:0 0 8px;color:var(--green-950);font-size:17px}
+.demo-access p{margin:0;color:var(--green-800);font-size:14px;line-height:1.5}
+.demo-access dl{display:grid;gap:8px;margin:16px 0;font-size:14px}
+.demo-access dl>div{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between}
+.demo-access dt{font-weight:600}.demo-access dd{margin:0;overflow-wrap:anywhere}
+.demo-fill-button{width:100%;min-height:42px;padding:10px 14px;border:1px solid var(--green-800);border-radius:9px;color:var(--green-950);background:#fff;font-weight:700}
+.demo-fill-button:hover:not(:disabled){background:#f4faf7}.demo-fill-button:disabled{opacity:.7;cursor:wait}
+.demo-access small{display:block;margin-top:12px;color:var(--green-800);font-size:12px;line-height:1.5}
+.project-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 24px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line);font-size:13px}
+.project-links a{color:var(--green-800);text-underline-offset:4px}
