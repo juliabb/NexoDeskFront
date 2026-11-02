@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
-import { AlertCircle, ArrowRight, Bell, ChevronRight, Headphones, LayoutDashboard, LoaderCircle, LogOut, Paperclip, Plus, Search, Settings, Ticket, Users, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Bell, ChevronRight, Headphones, LayoutDashboard, LoaderCircle, LogOut, Paperclip, Plus, Search, Building2, Ticket, Users, X } from 'lucide-react'
 import { NotificationsPanel } from './NotificationsPage'
 import { useAuth } from '../auth/AuthContext'
 import { api } from '../services/api'
@@ -78,7 +78,7 @@ export function DashboardPage() {
     <main className="app-shell">
       <aside className="sidebar">
         <div className="sidebar-brand brand-line"><div className="brand-mark"><Headphones size={22} /></div><div className="brand-copy"><span>NEXO</span><strong>DESK</strong></div></div>
-        <nav><a className="active" href="#inicio"><LayoutDashboard /> Visão geral</a><button type="button" onClick={() => navigate('/meus-chamados')}><Ticket /> Meus chamados</button>{session?.perfil !== 'Padrao' && <button type="button" onClick={() => navigate('/fila')}><Users /> Fila de atendimento</button>}{session?.perfil === 'Administrador' && <><button type="button" onClick={() => navigate('/usuarios')}><Users /> Gestão de usuários</button><button type="button" onClick={() => navigate('/configuracoes')}><Settings /> Configurações</button></>}</nav>
+        <nav><a className="active" href="#inicio"><LayoutDashboard /> Visão geral</a><button type="button" onClick={() => navigate('/meus-chamados')}><Ticket /> Meus chamados</button>{session?.perfil !== 'Padrao' && <button type="button" onClick={() => navigate('/fila')}><Users /> Fila de atendimento</button>}{session?.perfil === 'Administrador' && <><button type="button" onClick={() => navigate('/usuarios')}><Users /> Gestão de usuários</button><button type="button" onClick={() => navigate('/estrutura-organizacional')}><Building2 /> Estrutura organizacional</button></>}</nav>
         <div className="sidebar-user"><div className="avatar">{session?.name.charAt(0).toUpperCase()}</div><div><strong>{session?.name}</strong><span>{session?.perfil}</span></div></div>
         <button className="logout-button" onClick={() => void logout()}><LogOut /> Sair</button>
       </aside>

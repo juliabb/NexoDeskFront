@@ -6,7 +6,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { TicketDetailsPage } from './pages/TicketDetailsPage'
-import { SettingsPage } from './pages/SettingsPage'
+import { OrganizationalStructurePage } from './pages/OrganizationalStructurePage'
 import { ServiceQueuePage } from './pages/ServiceQueuePage'
 import { UsersPage } from './pages/UsersPage'
 import { MyTicketsPage } from './pages/MyTicketsPage'
@@ -30,7 +30,8 @@ function App() {
         <Route path="/alterar-senha" element={<PasswordChangeGate />} />
         <Route path="/" element={<ProtectedRoute />} />
         <Route path="/chamados/:id" element={sessionRoute(<TicketDetailsPage />)} />
-        <Route path="/configuracoes" element={adminRoute(<SettingsPage />)} />
+        <Route path="/estrutura-organizacional" element={adminRoute(<OrganizationalStructurePage />)} />
+        <Route path="/configuracoes" element={<Navigate to="/estrutura-organizacional" replace />} />
         <Route path="/fila" element={teamRoute(<ServiceQueuePage />)} />
         <Route path="/usuarios" element={adminRoute(<UsersPage />)} />
         <Route path="/meus-chamados" element={sessionRoute(<MyTicketsPage />)} />

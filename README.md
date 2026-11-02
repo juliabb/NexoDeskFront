@@ -28,7 +28,7 @@ Acesse a versão publicada do NexoDesk:
 - Fila de atendimento para a equipe de suporte;
 - Acompanhamento visual dos prazos de SLA;
 - Gestão de usuários, perfis e status de acesso;
-- Cadastro de departamentos, setores e categorias de chamados.
+- Gestão da estrutura organizacional: cadastro, edição, desativação e reativação de departamentos, setores e categorias de chamados.
 
 ## Acesso para demonstração
 
@@ -169,3 +169,11 @@ Os arquivos otimizados serão criados na pasta `dist/`. Para validá-los localme
 npm run preview
 ```
 
+
+## Estrutura organizacional
+
+Administradores acessam **Estrutura organizacional** pelo painel. Registros podem
+ser editados, desativados e reativados; a desativação mantém os vínculos existentes
+e impede novas seleções em cadastros e chamados. Desativar um departamento também
+torna seus setores e categorias indisponíveis, sem alterar o status individual
+desses registros. O endereço antigo `/configuracoes` redireciona para a nova área.
