@@ -62,7 +62,7 @@ export function LoginPage() {
               setPassword('@Password123')
               setError('')
             }}>Preencher conta de teste</button>
-            <small>Você pode explorar as áreas e operar chamados. Alterações em usuários, senhas e configurações ficam bloqueadas para preservar o ambiente.</small>
+            <small>Os cadastros e alterações são salvos no banco de dados compartilhado. Apenas as duas contas de administrador originais ficam protegidas contra alterações.</small>
           </section>
           <label htmlFor="email">E-mail</label>
           <div className="input-wrap"><Mail aria-hidden="true" /><input id="email" type="email" autoComplete="email" placeholder="voce@empresa.com" value={email} onChange={(event) => setEmail(event.target.value)} required /></div>

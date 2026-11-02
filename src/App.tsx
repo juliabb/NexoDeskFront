@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import type { ReactNode } from 'react'
-import { ShieldCheck } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
+import { ShieldCheck, X } from 'lucide-react'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import { DashboardPage } from './pages/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
@@ -43,9 +43,10 @@ function App() {
 
 function DemoEnvironmentBanner() {
   const { isDemo } = useAuth()
-  if (!isDemo) return null
+  const [dismissed, setDismissed] = useState(false)
+  if (!isDemo || dismissed) return null
 
-  return <div className="demo-environment-banner" role="status"><ShieldCheck /><span><strong>Ambiente de demonstração</strong> Você está usando uma conta administradora criada para testar os recursos do NexoDesk.</span></div>
+  return <div className="demo-environment-banner" role="status"><ShieldCheck /><span><strong>Ambiente de demonstração</strong> Você está usando uma conta administradora criada para testar os recursos do NexoDesk.</span><button type="button" className="demo-dismiss" aria-label="Fechar aviso de demonstração" onClick={() => setDismissed(true)}><X /></button></div>
 }
 
 function sessionRoute(element: ReactNode) {

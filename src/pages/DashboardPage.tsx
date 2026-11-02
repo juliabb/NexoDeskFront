@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
 import { AlertCircle, ArrowRight, Bell, ChevronRight, Headphones, LayoutDashboard, LoaderCircle, LogOut, Paperclip, Plus, Search, Settings, Ticket, Users, X } from 'lucide-react'
+import { NotificationsPanel } from './NotificationsPage'
 import { useAuth } from '../auth/AuthContext'
 import { api } from '../services/api'
 import { useNavigate } from 'react-router-dom'
@@ -20,6 +21,7 @@ export function DashboardPage() {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
   const [renderedAt] = useState(() => Date.now())
 
@@ -81,7 +83,7 @@ export function DashboardPage() {
         <button className="logout-button" onClick={() => void logout()}><LogOut /> Sair</button>
       </aside>
       <section className="dashboard">
-        <header className="topbar"><div className="search"><Search /><input aria-label="Pesquisar" placeholder="Pesquisar chamados..." value={search} onChange={(event) => setSearch(event.target.value)} /></div><button className={`icon-button notification-button ${notificationCount > 0 ? 'has-unread' : ''}`} aria-label={`${notificationCount} notificações não lidas`} onClick={() => navigate('/notificacoes')}><Bell />{notificationCount > 0 && <span>{notificationCount > 99 ? '99+' : notificationCount}</span>}</button><div className="avatar">{session?.name.charAt(0).toUpperCase()}</div></header>
+        <header className="topbar"><div className="search"><Search /><input aria-label="Pesquisar" placeholder="Pesquisar chamados..." value={search} onChange={(event) => setSearch(event.target.value)} /></div><button className={`icon-button notification-button ${notificationCount > 0 ? 'has-unread' : ''}`} aria-label={`${notificationCount} notificações não lidas`} aria-haspopup="dialog" aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen(true)}><Bell />{notificationCount > 0 && <span>{notificationCount > 99 ? '99+' : notificationCount}</span>}</button><div className="avatar">{session?.name.charAt(0).toUpperCase()}</div></header>
         <div className="dashboard-content">
           <div className="page-heading"><div><span className="eyebrow">Visão geral</span><h1>Olá, {session?.name.split(' ')[0]}!</h1><p>Acompanhe o que está acontecendo com seus chamados.</p></div><button className="primary-button" onClick={() => setModalOpen(true)}><Plus /> Novo chamado</button></div>
           <div className="stat-grid"><article><span>Meus chamados</span><strong>{loading ? '—' : stats.total}</strong><small>Total de solicitações registradas</small></article><article><span>Em andamento</span><strong>{loading ? '—' : stats.ongoing}</strong><small>Precisam de acompanhamento</small></article><article><span>Resolvidos</span><strong>{loading ? '—' : stats.resolved}</strong><small>Resolvidos ou fechados</small></article></div>
@@ -94,6 +96,9 @@ export function DashboardPage() {
           </section>
         </div>
       </section>
+      {notificationsOpen && <NotificationsPanel onClose={() => setNotificationsOpen(false)} onRead={() => {
+        if (session) void api<{ quantidade: number }>('/api/notificacoes/nao-lidas/quantidade', {}, session.token).then((result) => setNotificationCount(result.quantidade)).catch(() => undefined)
+      }} />}
       {modalOpen && session && <NewTicketModal token={session.token} onClose={() => setModalOpen(false)} onCreated={(ticketId) => { setModalOpen(false); void loadTickets(); navigate(`/chamados/${ticketId}`) }} />}
     </main>
   )

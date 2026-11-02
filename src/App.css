@@ -134,3 +134,10 @@
 .demo-access small{display:block;margin-top:12px;color:var(--green-800);font-size:12px;line-height:1.5}
 .project-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 24px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line);font-size:13px}
 .project-links a{color:var(--green-800);text-underline-offset:4px}
+
+.demo-dismiss{flex:0 0 auto;display:grid;place-items:center;width:28px;height:28px;margin:-3px -5px 0 0;padding:4px;border:0;border-radius:6px;color:inherit;background:transparent}.demo-dismiss:hover{background:#dff0e9}.demo-dismiss svg{width:16px;height:16px;margin:0}
+.notifications-dialog{position:fixed;inset:0 0 0 auto;width:min(580px,100%);height:100dvh;max-height:100dvh;max-width:100%;margin:0;padding:0;border:0;border-left:1px solid var(--line);color:inherit;background:#f5f8f6;box-shadow:-12px 0 45px #12392e26;overflow-y:auto}
+.notifications-dialog::backdrop{background:#10281f55}
+.notifications-dialog-body{min-height:100%;padding:24px;position:relative}.notifications-close{margin-left:auto;margin-bottom:12px}
+.notifications-dialog .notifications-content{padding:0}.notifications-dialog .page-heading{align-items:flex-start;flex-direction:column;gap:18px}.notifications-dialog .page-heading h1{font-size:28px}.notifications-dialog .page-heading p{font-size:14px;line-height:1.5}.notifications-dialog .notification-summary{margin-top:24px}.notifications-dialog .notification-row{padding:16px 12px;gap:10px;grid-template-columns:36px 1fr 8px}.notifications-dialog .notification-icon{width:36px;height:36px}.notifications-dialog .notification-row header{flex-wrap:wrap}.notifications-dialog .notification-row p{font-size:14px;overflow-wrap:anywhere}
+@media(max-width:620px){.notifications-dialog-body{padding:18px}}

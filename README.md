@@ -42,7 +42,7 @@ Na tela de login, clique em **Preencher conta de teste** e depois em **Entrar**.
 | Senha | `@Password123` |
 | Perfil | Administrador |
 
-> Esta é uma conta de demonstração com perfil de administrador. Visitantes podem explorar todas as áreas e operar o fluxo de chamados. Alterações em usuários, senhas, departamentos, setores e categorias ficam bloqueadas para preservar os dados compartilhados do ambiente.
+> Esta é uma conta de demonstração com perfil de administrador. Visitantes podem explorar todas as áreas e operar o fluxo de chamados. Cadastros e alterações são salvos no banco de dados compartilhado. Apenas as duas contas de administrador originais são protegidas contra alterações de dados, senha, perfil e status.
 
 ## Perfis de acesso
 
